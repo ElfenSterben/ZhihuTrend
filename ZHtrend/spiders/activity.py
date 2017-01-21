@@ -10,8 +10,6 @@ class ActivitySpider(scrapy.Spider):
     name = "activity"
 
     def start_requests(self):
-        reload(sys)
-        sys.setdefaultencoding('gbk')
         # db.SpiderActivityCreateDB()
         id = db.SpiderActivityGetID()
         for i in id:
@@ -34,29 +32,29 @@ class ActivitySpider(scrapy.Spider):
         if not response.xpath('//*[@id="zh-question-title"]/h2/a').re(">\n(.*)\n</a>"):
             return
         title = response.xpath('//*[@id="zh-question-title"]/h2/a').re(">\n(.*)\n</a>")[0]
-        total = response.css('.zh-answers-title').re(">查看全部 (.*) 个回答<".decode("utf-8"))[0]
+        total = response.css('.zh-answers-title').re(">查看全部 (.*) 个回答<")[0]
         approve = response.xpath('//*[@id="zh-question-answer-wrap"]/div/div[1]/button[1]/span[1]').re(">(.*)<")[0]
 
         content = response.css(".zm-editable-content").extract()[
             len(response.css(".zm-editable-content").extract()) - 1]
-        posttime = ""
-        if response.css('.answer-date-link').re('发布于 (.*)" target="_blank"'.decode("utf-8")):
-            posttime = response.css('.answer-date-link').re('发布于 (.*)" target="_blank"'.decode("utf-8"))[0]
+
+        if response.css('.answer-date-link').re('发布于 (.*)" target="_blank"'):
+            posttime = response.css('.answer-date-link').re('发布于 (.*)" target="_blank"')[0]
         else:
-            posttime = response.css('.answer-date-link').re('发布于 (.*)</a>'.decode("utf-8"))[0]
+            posttime = response.css('.answer-date-link').re('发布于 (.*)</a>')[0]
         edittime = posttime
-        if response.xpath('//*[@id="zh-question-answer-wrap"]/div/div[4]/div/a[1]').re('编辑于 (.*)</a>'.decode("utf-8")):
+        if response.xpath('//*[@id="zh-question-answer-wrap"]/div/div[4]/div/a[1]').re('编辑于 (.*)</a>'):
             edittime = \
                 response.xpath('//*[@id="zh-question-answer-wrap"]/div/div[4]/div/a[1]').re(
-                    '编辑于 (.*)</a>'.decode("utf-8"))[
+                    '编辑于 (.*)</a>')[
                     0]
         posttime = self.formatDate(posttime)
         edittime = self.formatDate(edittime)
         comment = 0
-        if response.xpath('//*[@id="zh-question-answer-wrap"]/div/div[4]/div/a[2]').re("</i>(.*) 条评论".decode("utf-8")):
+        if response.xpath('//*[@id="zh-question-answer-wrap"]/div/div[4]/div/a[2]').re("</i>(.*) 条评论"):
             comment = \
                 response.xpath('//*[@id="zh-question-answer-wrap"]/div/div[4]/div/a[2]').re(
-                    "</i>(.*) 条评论".decode("utf-8"))[
+                    "</i>(.*) 条评论")[
                     0]
         db.SpiderActivityInsert(
             id, questionId, answerId, title, total, approve, content, posttime, edittime, comment)
@@ -66,7 +64,7 @@ class ActivitySpider(scrapy.Spider):
         today = datetime.datetime.now()
         yesterday = (datetime.datetime.now() - datetime.timedelta(days=2))
         ret = ""
-        if re.search("昨天".decode("utf-8"), pre):
+        if re.search("昨天", pre):
             ret = yesterday.strftime("%Y-%m-%d ") + pre[4:] + ":00"
         elif re.search("[012][0-9]:[0-5][0-9]", pre):
             ret = today.strftime("%Y-%m-%d ") + pre[4:] + ":00"

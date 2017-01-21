@@ -1,13 +1,13 @@
 # -*- encoding:utf-8 -*-
 import time, datetime
 from scrapy.crawler import CrawlerProcess
-from ZHtrend.spiders import activity
+from spiders import activity
 from scrapy.utils.project import get_project_settings
 import sys
 
 sys.path.append("..")
 
-from ZHtrend.DB import db
+from DB import db
 
 
 def UpdateTrend():
@@ -30,7 +30,7 @@ def UpdateTrend():
     db.AlgoCreateTable()
     db.AlgoInsertTable(allRank)
     db.AlgoSwitchTable(table)
-    print "已经生成最新的趋势。"
+    print("已经生成最新的趋势。")
 
 
 if __name__ == "__main__":

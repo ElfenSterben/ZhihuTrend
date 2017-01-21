@@ -1,7 +1,7 @@
 # -*- encoding:utf-8 -*-
-import MySQLdb
+import pymysql
 
-conn = MySQLdb.connect("127.0.0.1", "root", "root", "ZHTrend", use_unicode=True, charset="gbk",
+conn = pymysql.connect("127.0.0.1", "root", "root", "ZHTrend", charset="utf-8",
                        connect_timeout=3600)
 
 
@@ -79,11 +79,10 @@ def WFUPloadWF(tags):
 
 
 def SITEGetTrend(date):
-    date = conn.escape_string(unicode(date).encode("gbk", errors="ignore"))
     sql = "select DISTINCT title,answer.questionid,rank from trend_%s,answer where trend_%s.questionid = answer.questionid  ORDER BY rank DESC limit 30;" % (
         date, date)
     try:
-        SITEconn = MySQLdb.connect("127.0.0.1", "root", "root", "ZHTrend", use_unicode=True, charset="gbk",
+        SITEconn = pymysql.connect("127.0.0.1", "root", "root", "ZHTrend", charset="utf-8",
                        connect_timeout=3600)
         cursor = SITEconn.cursor()
         cursor.execute(sql)
@@ -106,7 +105,6 @@ def SpiderActivityGetID():
 
 def SpiderActivityInsert(
         id, questionId, answerId, title, total, approve, content, posttime, edittime, comment):
-    content = conn.escape_string(unicode(content).encode("gbk", errors="ignore"))
     cursor = conn.cursor()
     sql = '''INSERT INTO answer VALUES ("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")''' % (
         id, questionId, answerId, title, total, approve, content, posttime, edittime, comment)
@@ -179,14 +177,12 @@ def SpiderUserInsert(id, name, description, profession, sex, answer, share, ques
                      receivethank, receivecollect, follower, following, spsonsorlive, interesttopic, interestcolumn,
                      interestquestion, interestcollection):
     cursor = conn.cursor()
-    description = conn.escape_string(unicode(description).encode("gbk", errors="ignore"))
-    profession = conn.escape_string(unicode(profession).encode("gbk", errors="ignore"))
     sql = "INSERT INTO user VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" \
           % (id, name, description, profession, sex, answer, share, question, collection,
              receiveupprove,
              receivethank, receivecollect, follower, following, spsonsorlive, interesttopic, interestcolumn,
              interestquestion, interestcollection)
-    sql = sql.encode("gbk", errors="ignore")
     cursor.execute(sql)
     conn.commit()
     cursor.close()
+

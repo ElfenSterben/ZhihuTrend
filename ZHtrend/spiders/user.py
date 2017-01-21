@@ -9,8 +9,6 @@ class UserSpider(scrapy.Spider):
     ids = []
 
     def start_requests(self):
-        reload(sys)
-        sys.setdefaultencoding('gbk')
         try:
             self.ids = [i[0] for i in db.SpiderUserGetIDs()]
         except:
