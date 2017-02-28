@@ -3,9 +3,6 @@ import time, datetime
 from scrapy.crawler import CrawlerProcess
 from spiders import activity
 from scrapy.utils.project import get_project_settings
-import sys
-
-sys.path.append("..")
 
 from DB import db
 
@@ -23,7 +20,7 @@ def UpdateTrend():
             else:
                 rank += 0
         allRank.append((questionid[0], rank))
-    allRank.sort(lambda x, y: cmp(y[1], x[1]))
+    allRank.sort(key=lambda r: r[1], reverse=True)
     today = datetime.datetime.now()
     table = "trend_" + today.strftime("%Y_%m_%d")
     db.AlgoDropTable()
