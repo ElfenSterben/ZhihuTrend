@@ -22,17 +22,22 @@ class Model(object):
 
     def save(self):
         col = self.get_collection()
-        col.insert(self.__dict__)
+        col.insert_one(self.__dict__)
 
     @classmethod
-    def delete(cls, forms):
+    def save_all(cls, forms):
         col = cls.get_collection()
-        col.remove(forms)
+        col.insert_many(forms)
+
+    @classmethod
+    def delete(cls, form):
+        col = cls.get_collection()
+        col.remove_one(form)
 
     @classmethod
     def _update(cls, old, new):
         col = cls.get_collection()
-        col.update(old, {'$set': new})
+        col.update_one(old, {'$set': new})
 
 
 

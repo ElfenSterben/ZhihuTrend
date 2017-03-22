@@ -16,5 +16,14 @@ class Answer(Model):
         self.comment = form.get('comment')
         self.user_id = form.get('user_id')
 
-    def get_today_answers(self):
-        return list(self.query.find({'post_time': datetime.now().strftime('%Y-%m-%d')}))
+    @classmethod
+    def get_today_question_ids(cls):
+        return cls.query.find({'post_time': datetime.now().strftime('%Y-%m-%d')}).distinct('question_id')
+
+    @classmethod
+    def get_answers_by_question_id(cls, question_id):
+        filter_dict = {
+            'post_time': datetime.now().strftime('%Y-%m-%d'),
+            'question_id': question_id,
+        }
+        return cls.query.find(filter_dict)

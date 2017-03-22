@@ -1,10 +1,9 @@
 # -*- encoding:utf-8 -*-
 import pymysql
-import pymongo
 
-conn = pymongo.MongoClient('127.0.0.1', 18888)
-db_zhtrend = conn.zhtrend
-conn.authenticate('test', 'test')
+
+conn = pymysql.connect("127.0.0.1", "root", "61608825", "ZHTrend", charset="utf8",
+                       connect_timeout=3600)
 
 
 def AlgoGetQuestionIDs():

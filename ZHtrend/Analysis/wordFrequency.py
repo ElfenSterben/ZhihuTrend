@@ -1,13 +1,13 @@
 # -*- encoding:utf-8 -*-
 import jieba.analyse
-from ZHtrend.DB import db
+from ZHtrend.model.User import User
 
 if __name__ == "__main__":
-    word = db.WFGetWord()
+    users = User.all()
     l = []
-    for i in word:
-        l.append(i[0])
-        l.append(i[1])
+    for u in users:
+        l.append(u.get('description'))
+        l.append(u.get('profession'))
     seg_list = jieba.cut_for_search(" ".join(l))
     tags = jieba.analyse.extract_tags(" ".join(l), withWeight=True, topK=30000)
     db.WFUPloadWF(tags)
